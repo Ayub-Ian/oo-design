@@ -30,3 +30,10 @@ class Outcome:
     
     def __repr__( self ):
         return f"{self.__class__.__name__:s}(name={self.name!r}, odds={self.odds!r})"
+
+
+class Bin(frozenset):
+    """ 
+        Class which contain a collection of Outcome instances 
+        which reflect the winning bets that are paid for a particular bin on a Roulette wheel
+    """

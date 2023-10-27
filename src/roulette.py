@@ -1,5 +1,7 @@
 try:
     from dataclasses import dataclass
+    import random
+    import os
     print("Successfully Imported Libraries")
 except ImportError as ie:
     print("Error Importing Libraries: ")
@@ -37,3 +39,26 @@ class Bin(frozenset):
         Class which contain a collection of Outcome instances 
         which reflect the winning bets that are paid for a particular bin on a Roulette wheel
     """
+
+
+class Wheel():
+    """Adds the given Outcome object to the Bin instance with the given number."""
+    def __init__(self) -> None:
+        seed_bytes = os.urandom(4)  # You can adjust the number of bytes as needed
+        seed_value = int.from_bytes(seed_bytes, byteorder='big')
+        self.bins = tuple(Bin() for i in range(38))
+        self.rng = random.Random(seed_value)
+        
+    def addOutcome(self,number: int, outcome: Outcome) -> None:
+        current_bin = self.bins[number]
+        updated_bin = current_bin | frozenset({outcome})
+        self.bins = self.bins[:number] + (updated_bin,) + self.bins[number + 1:]
+
+
+    def choose(self) -> Bin:
+        """ Generates a random number between 0 and 37, and returns the randomly selected Bin instance """
+        return self.rng.choice(self.bins)
+    
+    def get(self, bin: int) -> Bin:
+        """ Chooses a Bin selected at random from the wheel. """
+        return self.bins[bin]
